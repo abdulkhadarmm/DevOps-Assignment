@@ -23,4 +23,4 @@ async def health_check():
 
 @app.get("/api/message")
 async def get_message():
-    return {"message": "CI/CD pipeline working correctly"}
+    return {"message": "You've successfully integrated the backend!"}
