@@ -1,25 +1,29 @@
-pipeline {
-    agent any
+version: '3.9'
 
-    stages {
+services:
+  backend:
+    build: ./backend
+    container_name: python-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - backend-data:/app/data
+    networks:
+      - app-network
 
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
+  frontend:
+    build: ./frontend
+    container_name: node-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - app-network
 
-        stage('Deploy') {
-            steps {
-                bat 'docker-compose down'
-                bat 'docker-compose up -d --build'
-            }
-        }
+volumes:
+  backend-data:
 
-        stage('Verify') {
-            steps {
-                bat 'docker ps'
-            }
-        }
-    }
-}
+networks:
+  app-network:
+    driver: bridge

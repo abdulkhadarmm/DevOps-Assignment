@@ -9,31 +9,14 @@ pipeline {
             }
         }
 
-        stage('Build Backend Image') {
+        stage('Deploy') {
             steps {
-                bat 'docker build -t devops-backend ./backend'
+                bat 'docker-compose down'
+                bat 'docker-compose up -d --build'
             }
         }
 
-        stage('Build Frontend Image') {
-            steps {
-                bat 'docker build -t devops-frontend ./frontend'
-            }
-        }
-
-        stage('Stop Old Containers') {
-            steps {
-                bat 'docker-compose down || exit 0'
-            }
-        }
-
-        stage('Deploy Containers') {
-            steps {
-                bat 'docker-compose up -d'
-            }
-        }
-
-        stage('Verify Running Containers') {
+        stage('Verify') {
             steps {
                 bat 'docker ps'
             }
